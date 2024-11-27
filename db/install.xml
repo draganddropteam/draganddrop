@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/draganddrop/db" VERSION="2024112200" COMMENT="XMLDB file for plugin">
+    <TABLES>
+
+        <!-- Таблица TEACHER -->
+        <TABLE NAME="teacher" COMMENT="Таблица для преподавателей">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" UNSIGNED="true" NOTNULL="true" SEQUENCE="true" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+        </TABLE>
+
+        <!-- Таблица STUDENT -->
+        <TABLE NAME="student" COMMENT="Таблица для студентов">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" UNSIGNED="true" NOTNULL="true" SEQUENCE="true" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+        </TABLE>
+
+        <!-- Таблица TASKS -->
+        <TABLE NAME="tasks" COMMENT="Таблица для заданий">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" UNSIGNED="true" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="status" TYPE="char" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Task status: active or inactive" />
+                <FIELD NAME="image" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="time_limit" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="information" TYPE="text" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="created_at" TYPE="datetime" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="teacher_id" TYPE="int" LENGTH="10" UNSIGNED="true" NOTNULL="false" SEQUENCE="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+                <KEY NAME="teacher_fk" TYPE="foreign" FIELDS="teacher_id" REFTABLE="teacher" REFFIELDS="id" />
+            </KEYS>
+        </TABLE>
+
+        <!-- Таблица TASK_ZONES -->
+        <TABLE NAME="task_zones" COMMENT="Таблица для зон заданий">
+            <FIELDS>
+                <FIELD NAME="zone_id" TYPE="int" LENGTH="10" UNSIGNED="true" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="task_id" TYPE="int" LENGTH="10" UNSIGNED="true" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="coordinate_x" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="coordinate_y" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="true_answer_id" TYPE="int" LENGTH="10" UNSIGNED="true" NOTNULL="false" SEQUENCE="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="zone_id" />
+                <KEY NAME="task_fk" TYPE="foreign" FIELDS="task_id" REFTABLE="tasks" REFFIELDS="id" />
+                <KEY NAME="true_answer_fk" TYPE="foreign" FIELDS="true_answer_id" REFTABLE="correct_answers" REFFIELDS="true_answer_id" />
+            </KEYS>
+        </TABLE>
+
+        <!-- Таблица CORRECT_ANSWERS -->
+        <TABLE NAME="correct_answers" COMMENT="Таблица для правильных ответов">
+            <FIELDS>
+                <FIELD NAME="true_answer_id" TYPE="int" LENGTH="10" UNSIGNED="true" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="answer" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Text or path to image"/>  
+                <FIELD NAME="coordinate_x" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="coordinate_y" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="true_answer_id" />
+            </KEYS>
+        </TABLE>
+
+        <!-- Таблица ATTEMPTS -->
+        <TABLE NAME="attempts" COMMENT="Таблица для попыток выполнения заданий">
+            <FIELDS>
+                <FIELD NAME="attempt_id" TYPE="int" LENGTH="10" UNSIGNED="true" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="student_id" TYPE="int" LENGTH="10" UNSIGNED="true" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="task_id" TYPE="int" LENGTH="10" UNSIGNED="true" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="status" TYPE="char" LENGTH="15" NOTNULL="true" COMMENT="Attempt status: in_progress, completed, failed" SEQUENCE="false" />
+                <FIELD NAME="student_answer" TYPE="text" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="score" TYPE="float" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="teacher_feedback" TYPE="text" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="attempt_date" TYPE="datetime" NOTNULL="true" SEQUENCE="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="attempt_id"/>
+                <KEY NAME="student_fk" TYPE="foreign" FIELDS="student_id" REFTABLE="student" REFFIELDS="id" />
+                <KEY NAME="task_fk" TYPE="foreign" FIELDS="task_id" REFTABLE="tasks" REFFIELDS="id" />
+            </KEYS>
+        </TABLE>
+
+    </TABLES>
+</XMLDB>
